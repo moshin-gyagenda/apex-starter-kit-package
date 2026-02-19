@@ -1,6 +1,6 @@
 {
     "name": "apexglobal/apex-starter-kit",
-    "description": "Apex Starter Kit – modern Laravel starter with beautiful UI, authentication, and admin dashboard",
+    "description": "Production-ready Laravel starter kit with a full admin panel, role-based access control, security logs, IP blocking, CSV/PDF exports, real-time charts, and a beautiful Tailwind UI — fully installed in one command.",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -11,6 +11,18 @@
         "jetstream",
         "tailwind",
         "livewire",
+        "roles",
+        "permissions",
+        "spatie",
+        "security-logs",
+        "ip-blocking",
+        "rbac",
+        "user-management",
+        "export-csv",
+        "export-pdf",
+        "charts",
+        "authentication",
+        "admin",
         "apex"
     ],
     "authors": [

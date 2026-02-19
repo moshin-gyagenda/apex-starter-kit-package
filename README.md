@@ -1,23 +1,63 @@
 # Apex Starter Kit
 
-A Laravel starter kit with a modern UI, authentication, roles & permissions, and an admin backend. Built with Laravel, Jetstream, Spatie Permission, Tailwind CSS, and DomPDF.
+**Stop building the same boilerplate. Ship faster.**
+
+A production-ready Laravel starter kit that gives you a full admin panel, authentication, role-based access control, security monitoring, and a beautiful UI — all installed with a single command.
 
 [![Latest Version](https://img.shields.io/packagist/v/apexglobal/apex-starter-kit.svg?style=flat-square)](https://packagist.org/packages/apexglobal/apex-starter-kit)
 [![Total Downloads](https://img.shields.io/packagist/dt/apexglobal/apex-starter-kit.svg?style=flat-square)](https://packagist.org/packages/apexglobal/apex-starter-kit)
 [![License](https://img.shields.io/packagist/l/apexglobal/apex-starter-kit.svg?style=flat-square)](https://packagist.org/packages/apexglobal/apex-starter-kit)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue?style=flat-square)](https://www.php.net)
+[![Laravel](https://img.shields.io/badge/Laravel-11%2B%20%7C%2012%2B-red?style=flat-square)](https://laravel.com)
 
 ---
 
-## Requirements
+## Why Apex Starter Kit?
 
-- **PHP** >= 8.2  
-- **Laravel** >= 11.0  
-- **Composer**  
-- **Node.js** >= 18 (for frontend assets)
+Most Laravel starter kits give you authentication and nothing else. **Apex gives you everything your app needs on day one:**
+
+- A polished public-facing frontend landing page
+- Full authentication (login, register, password reset, 2FA)
+- A complete admin backend with real charts and live stats
+- Role-based access control (RBAC) with fine-grained permissions
+- Security logs that track every login and suspicious activity
+- IP blocking to lock out bad actors instantly
+- CSV and PDF exports on every major data table
+- Bulk actions, searchable selects, and per-page pagination throughout
+- A single config file to change the entire theme colour
+
+Built on **Laravel + Jetstream + Livewire + Tailwind CSS + Spatie Permission**.
 
 ---
 
-## Installation
+## What's included
+
+| Feature | Details |
+|---------|---------|
+| **Frontend landing page** | Hero, features, and contact section — ready to customise |
+| **Authentication** | Login, register, email verification, password reset, 2FA (Fortify + Jetstream) |
+| **Admin dashboard** | Live stats: total users, verified users, roles, security events. Charts: users by role (doughnut), security activity by month (bar) |
+| **User management** | Full CRUD with role assignment, search, sort, per-page pagination, CSV export, PDF export, bulk delete |
+| **Role management** | Create, edit, and delete roles with permission assignment via modal — no page reloads |
+| **Permission management** | Granular permissions (dashboard, users, security, roles, settings, reports, and more). Bulk actions, export |
+| **Security logs** | Automatic logging of logins and auth events with IP, user agent, location, and timestamp |
+| **IP blocking** | Block and unblock IP addresses directly from the security panel |
+| **Security exports** | Export full security logs as CSV or PDF |
+| **Profile management** | Update profile info and password (Jetstream) |
+| **Theme system** | One line in `config/theme.php` changes the entire primary colour across the UI |
+| **Dark mode support** | UI respects the user's system dark mode preference |
+| **Seeded demo data** | 5 roles, full permission set, and 6 demo users ready to log in |
+
+---
+
+## Quick start
+
+### Requirements
+
+- PHP >= 8.2
+- Laravel >= 11.0
+- Composer
+- Node.js >= 18
 
 ### 1. Require the package
 
@@ -31,16 +71,9 @@ composer require apexglobal/apex-starter-kit
 php artisan apex:install
 ```
 
-This will:
+One command publishes everything: config, views, assets, controllers, models, routes, seeders, and service providers.
 
-- Publish config (`config/theme.php`, `config/permission.php`)
-- Publish views (frontend, backend, auth, profile, components)
-- Publish assets to `public/assets`
-- Publish Fortify/Jetstream actions, providers, controllers, models, routes, and seeders
-- Replace the default welcome page with the Apex Starter Kit frontend
-- Set `APP_NAME="Apex Starter Kit"` in your `.env`
-
-### 3. Publish Spatie Permission migrations (first time only)
+### 3. Publish Spatie Permission migrations
 
 ```bash
 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
@@ -52,111 +85,98 @@ php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvid
 php artisan migrate
 ```
 
-### 5. (Optional) Seed database
+### 5. (Optional) Seed demo data
 
 ```bash
 php artisan db:seed
 ```
 
-- **RolePermissionSeeder** – Roles (super-admin, admin, manager, user, viewer) and permissions (dashboard, users, security, roles, settings, etc.).
-- **UserSeeder** – 6 sample users @apexglobal.com (password: `password`): Mosh (super-admin), Ashiraf (admin), Jorine (manager), Ronnie (viewer), Taylor (user), Morgan (user).
+Creates 5 roles, a full permission set, and 6 demo users (password: `password`):
 
-### 6. Start the app
+| Email | Role |
+|-------|------|
+| mosh@apexglobal.com | super-admin |
+| ashiraf@apexglobal.com | admin |
+| jorine@apexglobal.com | manager |
+| ronnie@apexglobal.com | viewer |
+| taylor@apexglobal.com | user |
+| morgan@apexglobal.com | user |
+
+### 6. Build assets and serve
 
 ```bash
+npm install && npm run build
 php artisan serve
 ```
 
-Visit: **http://localhost:8000**
+Visit **http://localhost:8000** — your app is ready.
 
 ---
 
-## What’s included
+## What you get out of the box
 
-| Area | Description |
-|------|-------------|
-| **Frontend** | Landing layout, hero, features, contact section |
-| **Auth** | Login, register, password reset (Fortify + Jetstream) |
-| **Dashboard** | Real stats (users, roles, security), charts (users by role, security by month), recent activity |
-| **Users** | User CRUD with roles; export CSV/PDF; bulk delete; per-page pagination |
-| **Roles & Permissions** | Roles and permissions (create/edit via modals); export and bulk actions |
-| **Security** | Security logs, filters, block/unblock IPs; export CSV/PDF; per-page pagination |
-| **Profile** | Profile and password management |
-| **Theme** | Single config for primary color (`config/theme.php`) |
-
----
-
-## Install command options
-
-| Option | Description |
-|--------|-------------|
-| `--force` | Overwrite existing published files |
-| `--config-only` | Publish only config files |
-| `--views-only` | Publish only views |
-| `--assets-only` | Publish only assets |
-| `--stubs-only` | Publish only code stubs (actions, providers, controllers, etc.) |
-
-Examples:
-
-```bash
-php artisan apex:install --force
-php artisan apex:install --config-only
+```
+/                    → Public landing page
+/login               → Authentication
+/dashboard           → Admin dashboard with live stats and charts
+/admin/users         → User management (CRUD, export, bulk delete)
+/admin/roles         → Role management (modal-based, no page reloads)
+/admin/permissions   → Permission management (modal-based)
+/admin/security      → Security logs, IP blocking, exports
+/user/profile        → Profile and password management
 ```
 
 ---
 
-## Customization
+## Customisation
 
-### Theme color
-
-Edit `config/theme.php`:
+### Change the theme colour
 
 ```php
-'primary' => '#F97316',  // e.g. orange
+// config/theme.php
+'primary' => '#F97316',  // any hex colour
 ```
 
-### Views and assets
+That one value updates buttons, links, highlights, and accents across the entire UI.
 
-All views are published under `resources/views/` (frontend, backend, auth, profile, components). You can edit them directly. Assets are in `public/assets`.
+### Edit views and controllers
 
-### Sample users
-
-After `php artisan db:seed`, 6 users are created at @apexglobal.com (password: `password`). Edit `database/seeders/UserSeeder.php` to change them. The installer publishes `RoleController` and `PermissionController` plus routes for roles and permissions.
+Everything is published into your app — views under `resources/views/`, controllers under `app/Http/Controllers/`. You own the code and can modify anything freely.
 
 ---
 
-## Package structure (for reference)
+## Installer options
 
-```
-apex-starter-kit-package/
-├── config/           # theme.php, permission.php
-├── database/
-│   └── migrations/   # security_logs, login fields for users
-├── resources/
-│   ├── assets/       # Published to public/assets
-│   └── views/        # frontend, backend, auth, profile, components
-├── stubs/            # Published into your app (actions, controllers, models, routes, seeders)
-└── src/
-    ├── ApexStarterKitServiceProvider.php
-    └── Commands/InstallCommand.php
+```bash
+php artisan apex:install              # Install everything
+php artisan apex:install --force      # Overwrite existing files
+php artisan apex:install --config-only
+php artisan apex:install --views-only
+php artisan apex:install --assets-only
+php artisan apex:install --stubs-only
 ```
 
 ---
 
-## Documentation
+## Tech stack
 
-- **[INSTALLATION.md](INSTALLATION.md)** – Step-by-step installation and first run  
-- **[LOCAL-TESTING.md](LOCAL-TESTING.md)** – Test the package locally (path repository, no Packagist)  
-- **[CHANGELOG.md](CHANGELOG.md)** – Version history  
-- **[DEVELOPING.md](DEVELOPING.md)** – Package layout and re-publish commands (for contributors)
+| Layer | Package |
+|-------|---------|
+| Framework | Laravel 11 / 12 |
+| Authentication | Laravel Jetstream + Fortify |
+| Reactive UI | Livewire 3 |
+| Styling | Tailwind CSS |
+| Roles & Permissions | Spatie Laravel Permission |
+| PDF export | barryvdh/laravel-dompdf |
 
 ---
 
 ## Support
 
-- **Email:** contact@apexglobal.com  
+- **Email:** contact@apexglobal.com
+- **Issues:** [GitHub Issues](https://github.com/moshin-gyagenda/apex-starter-kit-package/issues)
 - **License:** [MIT](LICENSE)
 
 ---
 
-**Apex Starter Kit** by Apex Global Technologies.
+**Apex Starter Kit** by Apex Global Technologies — *build less boilerplate, ship more product.*
