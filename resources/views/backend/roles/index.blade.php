@@ -353,6 +353,12 @@
         </div>
     </div>
 
+    @include('backend.partials.confirm-bulk-delete-modal', [
+        'formId' => 'roles-bulk-form',
+        'title' => 'Delete Roles',
+        'messageTemplate' => 'Are you sure you want to delete {count} selected role(s)? Roles assigned to users cannot be deleted.',
+    ])
+
 @endsection
 
 @section('scripts')
@@ -470,11 +476,15 @@
         document.getElementById('roles-bulk-delete')?.addEventListener('click', function() {
             const ids = getSelectedRoleIds();
             if (ids.length === 0) return;
-            if (!confirm('Delete ' + ids.length + ' selected role(s)?')) return;
             const form = document.getElementById('roles-bulk-form');
             form.querySelectorAll('input[name="ids[]"]').forEach(el => el.remove());
             ids.forEach(id => { const i = document.createElement('input'); i.type = 'hidden'; i.name = 'ids[]'; i.value = id; form.appendChild(i); });
-            form.submit();
+            var modal = document.getElementById('bulk-delete-confirm-modal');
+            var msg = (modal.getAttribute('data-message-template') || '').replace('{count}', ids.length);
+            document.getElementById('bulk-delete-message').textContent = msg;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         });
     });
 </script>

@@ -143,8 +143,8 @@
                     </div>
                 </div>
                 <div class="flex-shrink-0 min-w-[150px]">
-                    <label for="event_type" class="block text-sm font-medium text-gray-700 mb-1.5">Event Type</label>
-                    <select name="event_type" id="event_type" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm">
+                    <label for="filter-event-type" class="block text-sm font-medium text-gray-700 mb-1.5">Event Type</label>
+                    <select name="event_type" id="filter-event-type" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm">
                         <option value="">All Types</option>
                         @foreach($eventTypes as $type)
                             <option value="{{ $type }}" {{ request('event_type') == $type ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $type)) }}</option>
@@ -152,8 +152,8 @@
                     </select>
                 </div>
                 <div class="flex-shrink-0 min-w-[120px]">
-                    <label for="severity" class="block text-sm font-medium text-gray-700 mb-1.5">Severity</label>
-                    <select name="severity" id="severity" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm">
+                    <label for="filter-severity" class="block text-sm font-medium text-gray-700 mb-1.5">Severity</label>
+                    <select name="severity" id="filter-severity" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm">
                         <option value="">All</option>
                         <option value="low" {{ request('severity') == 'low' ? 'selected' : '' }}>Low</option>
                         <option value="medium" {{ request('severity') == 'medium' ? 'selected' : '' }}>Medium</option>
@@ -231,9 +231,9 @@
                                         <i data-lucide="eye" class="h-5 w-5"></i>
                                     </a>
                                     @if(!$log->blocked)
-                                    <form action="{{ route('admin.security.block-ip', $log->ip_address) }}" method="POST" class="inline-block">
+                                    <form id="block-form-{{ $log->id }}" action="{{ route('admin.security.block-ip', $log->ip_address) }}" method="POST" class="inline-block">
                                         @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-900 transition-colors" title="Block IP" onclick="return confirm('Block IP address {{ $log->ip_address }}?');">
+                                        <button type="button" class="block-ip-btn text-red-600 hover:text-red-900 transition-colors" title="Block IP" data-form-id="block-form-{{ $log->id }}" data-ip="{{ $log->ip_address }}">
                                             <i data-lucide="ban" class="h-5 w-5"></i>
                                         </button>
                                     </form>
@@ -267,18 +267,33 @@
     </div>
 </div>
 
+@include('backend.partials.confirm-action-modal', ['title' => 'Block IP address'])
+
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Close alert messages
-        const closeButtons = document.querySelectorAll('.close-btn');
-        closeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                this.closest('.alert-message').remove();
+        document.querySelectorAll('.close-btn').forEach(button => {
+            button.addEventListener('click', function() { this.closest('.alert-message').remove(); });
+        });
+
+        document.querySelectorAll('.block-ip-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                var modal = document.getElementById('confirm-action-modal');
+                var ip = this.getAttribute('data-ip');
+                var formId = this.getAttribute('data-form-id');
+                document.getElementById('confirm-action-message').textContent = 'Block IP address ' + ip + '? This will block all requests from this IP.';
+                modal.setAttribute('data-form-id', formId);
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
             });
         });
-        
-        // Initialize Lucide icons
+
+        if (typeof TomSelect !== 'undefined') {
+            if (document.getElementById('filter-event-type')) new TomSelect('#filter-event-type', { create: false, allowEmptyOption: true });
+            if (document.getElementById('filter-severity')) new TomSelect('#filter-severity', { create: false, allowEmptyOption: true });
+        }
+
         lucide.createIcons();
     });
 </script>

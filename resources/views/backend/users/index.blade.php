@@ -113,6 +113,7 @@
                 </div>
                 <div class="sm:w-48">
                     <select
+                        id="filter-role"
                         name="role"
                         class="w-full py-2.5 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition text-sm bg-white"
                     >
@@ -459,7 +460,13 @@
         </div>
     </div>
 
-    <!-- Confirmation Popup -->
+    @include('backend.partials.confirm-bulk-delete-modal', [
+        'formId' => 'users-bulk-form',
+        'title' => 'Delete Users',
+        'messageTemplate' => 'Are you sure you want to delete {count} selected user(s)? This cannot be undone.',
+    ])
+
+    <!-- Confirmation Popup (single user delete) -->
     <div id="confirmation-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-lg border border-gray-200 p-6 max-w-md w-full">
             <div class="flex items-start gap-4">
@@ -621,7 +628,6 @@
         document.getElementById('users-bulk-delete')?.addEventListener('click', function() {
             const ids = getSelectedUserIds();
             if (ids.length === 0) return;
-            if (!confirm('Delete ' + ids.length + ' selected user(s)? This cannot be undone.')) return;
             const form = document.getElementById('users-bulk-form');
             form.querySelectorAll('input[name="ids[]"]').forEach(el => el.remove());
             ids.forEach(id => {
@@ -631,8 +637,20 @@
                 input.value = id;
                 form.appendChild(input);
             });
-            form.submit();
+            var modal = document.getElementById('bulk-delete-confirm-modal');
+            var msg = (modal.getAttribute('data-message-template') || '').replace('{count}', ids.length);
+            document.getElementById('bulk-delete-message').textContent = msg;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         });
+
+        if (document.getElementById('filter-role') && typeof TomSelect !== 'undefined') {
+            new TomSelect('#filter-role', { create: false, allowEmptyOption: true });
+        }
+        if (document.getElementById('modal_role') && typeof TomSelect !== 'undefined') {
+            new TomSelect('#modal_role', { create: false });
+        }
     });
 </script>
 @endsection

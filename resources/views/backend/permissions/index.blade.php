@@ -143,6 +143,11 @@
                 </div>
             @else
                 <form id="permissions-bulk-form" action="{{ route('admin.permissions.bulk-destroy') }}" method="POST" class="hidden">@csrf</form>
+                @include('backend.partials.confirm-bulk-delete-modal', [
+                    'formId' => 'permissions-bulk-form',
+                    'title' => 'Delete Permissions',
+                    'messageTemplate' => 'Are you sure you want to delete {count} selected permission(s)? This will remove them from all roles.',
+                ])
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse">
                         <thead>
@@ -392,11 +397,15 @@
         document.getElementById('permissions-bulk-delete')?.addEventListener('click', function() {
             const ids = getSelectedPermissionIds();
             if (ids.length === 0) return;
-            if (!confirm('Delete ' + ids.length + ' selected permission(s)? This will remove them from all roles.')) return;
             const form = document.getElementById('permissions-bulk-form');
             form.querySelectorAll('input[name="ids[]"]').forEach(el => el.remove());
             ids.forEach(id => { const i = document.createElement('input'); i.type = 'hidden'; i.name = 'ids[]'; i.value = id; form.appendChild(i); });
-            form.submit();
+            var modal = document.getElementById('bulk-delete-confirm-modal');
+            var msg = (modal.getAttribute('data-message-template') || '').replace('{count}', ids.length);
+            document.getElementById('bulk-delete-message').textContent = msg;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         });
     });
 </script>
