@@ -159,4 +159,4 @@ apex-starter-kit-package/
 
 ---
 
-**Apex Starter Kit** by [Apex Global](https://apexglobal.com).
+**Apex Starter Kit** by Apex Global Technologies.

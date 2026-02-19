@@ -165,7 +165,7 @@
         <div class="border-t pt-8" style="border-top: 0.5px solid rgba(229, 231, 235, 0.3);">
             <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                 <p class="text-gray-600 text-sm text-center md:text-left">
-                    &copy; {{ date('Y') }} <span class="font-semibold text-gray-900">{{ config('app.name', 'Your App') }}</span>. All rights reserved.
+                    &copy; {{ date('Y') }} <span class="font-semibold text-gray-900">{{ config('app.name', 'Apex Starter Kit') }}</span> by Apex Global Technologies. All rights reserved.
                 </p>
                 <div class="flex items-center gap-6 text-xs text-gray-500">
                     <span>Made with <span class="text-red-500">♥</span> in Uganda</span>
