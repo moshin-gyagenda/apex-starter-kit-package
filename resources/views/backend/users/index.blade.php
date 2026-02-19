@@ -169,10 +169,10 @@
                                 </a>
                             </div>
                         </div>
-                        <button type="button" id="open-add-user-modal" class="inline-flex items-center px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium text-sm shadow-sm hover:shadow-md">
+                        <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium text-sm shadow-sm hover:shadow-md">
                             <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
                             Add New User
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <!-- Bulk actions bar (hidden by default) -->
@@ -194,13 +194,13 @@
                         <p class="text-sm text-gray-500 text-center max-w-sm mb-6">
                             You don't have any users yet. Add your first user to get started.
                         </p>
-                        <button
-                            id="open-add-user-modal-empty"
+                        <a
+                            href="{{ route('admin.users.create') }}"
                             class="inline-flex items-center px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium text-sm shadow-sm hover:shadow-md"
                         >
                             <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
                             Add Your First User
-                        </button>
+                        </a>
                     </div>
                 @else
                     <form id="users-bulk-form" action="{{ route('admin.users.bulk-destroy') }}" method="POST" class="hidden">
@@ -298,168 +298,6 @@
         </div>
     </div>
 
-    <!-- Add User Modal -->
-    <div id="add-user-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <!-- Modal Header -->
-            <div class="px-6 py-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-                        <i data-lucide="user-plus" class="w-6 h-6 text-primary-600"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Add New User</h3>
-                        <p class="text-sm text-gray-500">Create a new user account</p>
-                    </div>
-                </div>
-                <button id="close-add-user-modal" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="flex-1 overflow-y-auto px-6 py-5">
-                <form id="add-user-form" action="{{ route('admin.users.store') }}" method="POST">
-                    @csrf
-                    <div class="space-y-6">
-                        <!-- Personal Information Section -->
-                        <div>
-                            <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
-                                <i data-lucide="user" class="w-4 h-4 mr-2 text-primary-500"></i>
-                                Personal Information
-                            </h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="modal_name" class="block text-sm font-medium text-gray-700 mb-1.5">
-                                        Full Name <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        id="modal_name"
-                                        value="{{ old('name') }}"
-                                        placeholder="Enter full name"
-                                        required
-                                        class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm"
-                                    >
-                                    @error('name')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <label for="modal_email" class="block text-sm font-medium text-gray-700 mb-1.5">
-                                        Email Address <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        id="modal_email"
-                                        value="{{ old('email') }}"
-                                        placeholder="Enter email address"
-                                        required
-                                        class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm"
-                                    >
-                                    @error('email')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Password Section -->
-                        <div>
-                            <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
-                                <i data-lucide="lock" class="w-4 h-4 mr-2 text-primary-500"></i>
-                                Password
-                            </h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="modal_password" class="block text-sm font-medium text-gray-700 mb-1.5">
-                                        Password <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        id="modal_password"
-                                        placeholder="Enter password"
-                                        required
-                                        class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm"
-                                    >
-                                    @error('password')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <label for="modal_password_confirmation" class="block text-sm font-medium text-gray-700 mb-1.5">
-                                        Confirm Password <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="password"
-                                        name="password_confirmation"
-                                        id="modal_password_confirmation"
-                                        placeholder="Confirm password"
-                                        required
-                                        class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm"
-                                    >
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Account Settings Section -->
-                        <div>
-                            <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
-                                <i data-lucide="settings" class="w-4 h-4 mr-2 text-primary-500"></i>
-                                Account Settings
-                            </h4>
-                            <div>
-                                <label for="modal_role" class="block text-sm font-medium text-gray-700 mb-1.5">
-                                    Role <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="modal_role"
-                                    name="role"
-                                    required
-                                    class="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 transition text-sm"
-                                >
-                                    <option value="" disabled selected>Select a role</option>
-                                    @foreach($roles as $role)
-                                        <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
-                                            {{ ucfirst(str_replace('-', ' ', $role->name)) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('role')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-                <button
-                    id="cancel-add-user-modal"
-                    type="button"
-                    class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                    Cancel
-                </button>
-                <button
-                    id="submit-add-user-form"
-                    type="button"
-                    class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium text-sm shadow-sm hover:shadow-md"
-                >
-                    <i data-lucide="save" class="w-4 h-4 mr-2 inline"></i>
-                    Create User
-                </button>
-            </div>
-        </div>
-    </div>
-
     @include('backend.partials.confirm-bulk-delete-modal', [
         'formId' => 'users-bulk-form',
         'title' => 'Delete Users',
@@ -504,45 +342,6 @@
             btn.addEventListener('click', function() {
                 this.closest('.alert-message').remove();
             });
-        });
-
-        // Modal functionality
-        const modal = document.getElementById('add-user-modal');
-        const openModalBtns = document.querySelectorAll('#open-add-user-modal, #open-add-user-modal-empty');
-        const closeModalBtn = document.getElementById('close-add-user-modal');
-        const cancelModalBtn = document.getElementById('cancel-add-user-modal');
-        const submitFormBtn = document.getElementById('submit-add-user-form');
-
-        function openModal() {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            lucide.createIcons();
-        }
-
-        function closeModal() {
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-            // Reset form
-            document.getElementById('add-user-form').reset();
-        }
-
-        openModalBtns.forEach(btn => {
-            btn.addEventListener('click', openModal);
-        });
-
-        closeModalBtn.addEventListener('click', closeModal);
-        cancelModalBtn.addEventListener('click', closeModal);
-
-        // Close modal when clicking outside
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Submit form
-        submitFormBtn.addEventListener('click', function() {
-            document.getElementById('add-user-form').submit();
         });
 
         // Delete confirmation popup
@@ -647,9 +446,6 @@
 
         if (document.getElementById('filter-role') && typeof TomSelect !== 'undefined') {
             new TomSelect('#filter-role', { create: false, allowEmptyOption: true });
-        }
-        if (document.getElementById('modal_role') && typeof TomSelect !== 'undefined') {
-            new TomSelect('#modal_role', { create: false });
         }
     });
 </script>
