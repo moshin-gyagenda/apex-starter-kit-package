@@ -27,6 +27,7 @@ class ApexStarterKitServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/theme.php' => config_path('theme.php'),
             __DIR__.'/../config/permission.php' => config_path('permission.php'),
+            __DIR__.'/../stubs/config/fortify.php' => config_path('fortify.php'),
         ], 'apex-config');
 
         // Publish frontend views
@@ -159,6 +160,8 @@ class ApexStarterKitServiceProvider extends ServiceProvider
             __DIR__.'/../stubs/database/seeders/RolePermissionSeeder.php' => database_path('seeders/RolePermissionSeeder.php'),
             // Replace welcome page
             __DIR__.'/../stubs/resources/views/welcome.blade.php' => resource_path('views/welcome.blade.php'),
+            // Fortify config
+            __DIR__.'/../stubs/config/fortify.php' => config_path('fortify.php'),
         ], 'apex-stubs');
 
         // Publish migrations

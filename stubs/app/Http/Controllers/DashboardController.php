@@ -17,8 +17,10 @@ class DashboardController extends Controller
         $totalUsers = User::count();
         $verifiedUsers = User::whereNotNull('email_verified_at')->count();
         $totalRoles = Role::count();
-        $securityEventsToday = SecurityLog::whereDate('created_at', today())->count();
-        $securityEventsTotal = SecurityLog::count();
+        $isProduction = app()->isProduction();
+
+        $securityEventsToday = $isProduction ? SecurityLog::whereDate('created_at', today())->count() : 0;
+        $securityEventsTotal = $isProduction ? SecurityLog::count() : 0;
 
         $usersByRole = User::query()
             ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
@@ -36,24 +38,31 @@ class DashboardController extends Controller
                 'count' => (int) $r->count,
             ])->values()->all();
 
-        $securityByMonth = SecurityLog::query()
-            ->whereYear('created_at', now()->year)
-            ->selectRaw('MONTH(created_at) as month, count(*) as count')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->keyBy('month');
-
         $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        $activityByMonth = collect(range(1, 12))->map(fn ($m) => [
-            'month_name' => $monthNames[$m - 1],
-            'count' => $securityByMonth->get($m)?->count ?? 0,
-        ])->values()->all();
 
-        $recentSecurityLogs = SecurityLog::with('user')
-            ->latest()
-            ->limit(8)
-            ->get();
+        if ($isProduction) {
+            $securityByMonth = SecurityLog::query()
+                ->whereYear('created_at', now()->year)
+                ->selectRaw('CAST(strftime(\'%m\', created_at) AS INTEGER) as month, count(*) as count')
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get()
+                ->keyBy('month');
+
+            $activityByMonth = collect(range(1, 12))->map(fn ($m) => [
+                'month_name' => $monthNames[$m - 1],
+                'count' => $securityByMonth->get($m)?->count ?? 0,
+            ])->values()->all();
+
+            $recentSecurityLogs = SecurityLog::with('user')->latest()->limit(8)->get();
+        } else {
+            $activityByMonth = collect(range(1, 12))->map(fn ($m) => [
+                'month_name' => $monthNames[$m - 1],
+                'count' => 0,
+            ])->values()->all();
+
+            $recentSecurityLogs = collect();
+        }
 
         $recentUsers = User::with('roles')
             ->latest()
@@ -70,6 +79,7 @@ class DashboardController extends Controller
             'activityByMonth' => $activityByMonth,
             'recentSecurityLogs' => $recentSecurityLogs,
             'recentUsers' => $recentUsers,
+            'isProduction' => $isProduction,
         ]);
     }
 }
