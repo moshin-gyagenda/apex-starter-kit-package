@@ -1,0 +1,53 @@
+{
+    "name": "apexglobal/apex-starter-kit",
+    "description": "Apex Starter Kit – modern Laravel starter with beautiful UI, authentication, and admin dashboard",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "starter-kit",
+        "admin-panel",
+        "dashboard",
+        "jetstream",
+        "tailwind",
+        "livewire",
+        "apex"
+    ],
+    "authors": [
+        {
+            "name": "Apex Global",
+            "email": "contact@apexglobal.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0|^12.0",
+        "laravel/jetstream": "^5.0",
+        "laravel/sanctum": "^4.0",
+        "livewire/livewire": "^3.0",
+        "spatie/laravel-permission": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ApexGlobal\\ApexStarterKit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ApexGlobal\\ApexStarterKit\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ApexGlobal\\ApexStarterKit\\ApexStarterKitServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
