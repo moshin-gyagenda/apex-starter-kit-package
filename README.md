@@ -74,17 +74,25 @@ php artisan apex:install
 One command does everything:
 - Publishes config, views, assets, controllers, models, routes, and seeders
 - Registers `FortifyServiceProvider` and `JetstreamServiceProvider` in `bootstrap/providers.php` automatically
-- Publishes Spatie Permission migrations
 - Replaces the default welcome page with the Apex landing page
 - Sets `APP_NAME` in your `.env`
 
-### 3. Run migrations
+### 3. Publish Spatie Permission migrations (first time only)
+
+```bash
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+```
+
+This is kept separate so your migration file is never accidentally overwritten on re-installs.
+
+### 4. Run migrations
 
 ```bash
 php artisan migrate
 ```
 
 ### 5. (Optional) Seed demo data
+
 
 ```bash
 php artisan db:seed

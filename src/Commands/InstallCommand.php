@@ -88,14 +88,6 @@ class InstallCommand extends Command
             $this->registerProviders();
         }
 
-        // Publish Spatie Permission migrations automatically
-        if (!$configOnly && !$viewsOnly && !$assetsOnly && !$stubsOnly) {
-            $this->info('📦 Publishing Spatie Permission migrations...');
-            $this->call('vendor:publish', [
-                '--provider' => 'Spatie\Permission\PermissionServiceProvider',
-            ]);
-            $this->newLine();
-        }
 
         // Update .env APP_NAME
         if (!$configOnly && !$viewsOnly && !$assetsOnly && !$stubsOnly) {
@@ -107,19 +99,22 @@ class InstallCommand extends Command
         $this->newLine();
 
         $this->info('📝 Next steps:');
-        $this->line('   1. Run migrations:');
+        $this->line('   1. Publish Spatie Permission migrations (first time only):');
+        $this->line('      php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"');
+        $this->line('');
+        $this->line('   2. Run migrations:');
         $this->line('      php artisan migrate');
         $this->line('');
-        $this->line('   2. (Optional) Seed demo data:');
+        $this->line('   3. (Optional) Seed demo data:');
         $this->line('      php artisan db:seed');
         $this->line('');
-        $this->line('   3. Build frontend assets:');
+        $this->line('   4. Build frontend assets:');
         $this->line('      npm install && npm run build');
         $this->line('');
-        $this->line('   4. Start development server:');
+        $this->line('   5. Start development server:');
         $this->line('      php artisan serve');
         $this->line('');
-        $this->line('   5. Configure theme color (optional):');
+        $this->line('   6. Configure theme color (optional):');
         $this->line('      Edit config/theme.php to change the primary color');
     }
 
