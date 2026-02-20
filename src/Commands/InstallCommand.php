@@ -6,11 +6,6 @@ use Illuminate\Console\Command;
 
 class InstallCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'apex:install
                             {--safe : Skip files that already exist (preserve customisations)}
                             {--config-only : Only publish config files}
@@ -18,22 +13,21 @@ class InstallCommand extends Command
                             {--assets-only : Only publish asset files}
                             {--stubs-only : Only publish stub files}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Install Apex Starter Kit components into your application';
 
     /**
-     * Execute the console command.
+     * Providers that must be present in bootstrap/providers.php.
      */
+    protected array $requiredProviders = [
+        'App\Providers\FortifyServiceProvider::class',
+        'App\Providers\JetstreamServiceProvider::class',
+    ];
+
     public function handle()
     {
         $this->info('🚀 Installing Apex Starter Kit...');
         $this->newLine();
 
-        // Force is the default — use --safe to preserve existing files
         $force = !$this->option('safe');
         $configOnly = $this->option('config-only');
         $viewsOnly = $this->option('views-only');
@@ -55,7 +49,7 @@ class InstallCommand extends Command
             $this->newLine();
         }
 
-        // Publish views
+        // Publish views + always overwrite welcome.blade.php
         if (!$configOnly && !$assetsOnly && !$stubsOnly) {
             $this->info('📦 Publishing view files...');
             $this->call('vendor:publish', [
@@ -64,7 +58,7 @@ class InstallCommand extends Command
             ]);
             $this->call('vendor:publish', [
                 '--tag' => 'apex-welcome',
-                '--force' => $force,
+                '--force' => true,
             ]);
             $this->newLine();
         }
@@ -79,9 +73,9 @@ class InstallCommand extends Command
             $this->newLine();
         }
 
-        // Publish stubs (Fortify Actions, Service Providers, Controllers, Models, Routes)
+        // Publish stubs (Actions, Controllers, Models, Routes, Seeders, Service Providers)
         if (!$configOnly && !$viewsOnly && !$assetsOnly) {
-            $this->info('📦 Publishing Fortify Actions, Service Providers, Controllers, Models, and Routes...');
+            $this->info('📦 Publishing controllers, models, routes, and service providers...');
             $this->call('vendor:publish', [
                 '--tag' => 'apex-stubs',
                 '--force' => $force,
@@ -89,26 +83,85 @@ class InstallCommand extends Command
             $this->newLine();
         }
 
-        // Update .env APP_NAME to Apex Starter Kit
+        // Auto-register providers in bootstrap/providers.php
+        if (!$configOnly && !$viewsOnly && !$assetsOnly) {
+            $this->registerProviders();
+        }
+
+        // Publish Spatie Permission migrations automatically
+        if (!$configOnly && !$viewsOnly && !$assetsOnly && !$stubsOnly) {
+            $this->info('📦 Publishing Spatie Permission migrations...');
+            $this->call('vendor:publish', [
+                '--provider' => 'Spatie\Permission\PermissionServiceProvider',
+            ]);
+            $this->newLine();
+        }
+
+        // Update .env APP_NAME
         if (!$configOnly && !$viewsOnly && !$assetsOnly && !$stubsOnly) {
             $this->updateEnvAppName();
         }
 
+        $this->newLine();
         $this->info('✅ Apex Starter Kit installed successfully!');
         $this->newLine();
 
         $this->info('📝 Next steps:');
-        $this->line('   1. Publish Spatie Permission migrations (if not done):');
-        $this->line('      php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"');
-        $this->line('');
-        $this->line('   2. Run migrations:');
+        $this->line('   1. Run migrations:');
         $this->line('      php artisan migrate');
         $this->line('');
-        $this->line('   3. Configure theme color (optional):');
-        $this->line('      Edit config/theme.php to change the primary color');
+        $this->line('   2. (Optional) Seed demo data:');
+        $this->line('      php artisan db:seed');
+        $this->line('');
+        $this->line('   3. Build frontend assets:');
+        $this->line('      npm install && npm run build');
         $this->line('');
         $this->line('   4. Start development server:');
         $this->line('      php artisan serve');
+        $this->line('');
+        $this->line('   5. Configure theme color (optional):');
+        $this->line('      Edit config/theme.php to change the primary color');
+    }
+
+    /**
+     * Inject FortifyServiceProvider and JetstreamServiceProvider into
+     * bootstrap/providers.php without overwriting the whole file.
+     */
+    protected function registerProviders(): void
+    {
+        $providersPath = base_path('bootstrap/providers.php');
+
+        if (!file_exists($providersPath)) {
+            $this->warn('  bootstrap/providers.php not found — skipping provider registration.');
+            return;
+        }
+
+        $contents = file_get_contents($providersPath);
+        $added = [];
+
+        foreach ($this->requiredProviders as $provider) {
+            if (!str_contains($contents, $provider)) {
+                // Insert before the closing bracket of the return array
+                $contents = preg_replace(
+                    '/(\];)(\s*)$/',
+                    "    {$provider},\n$1$2",
+                    $contents
+                );
+                $added[] = $provider;
+            }
+        }
+
+        if (!empty($added)) {
+            file_put_contents($providersPath, $contents);
+            $this->info('📋 Registered providers in bootstrap/providers.php:');
+            foreach ($added as $provider) {
+                $this->line("      + {$provider}");
+            }
+        } else {
+            $this->info('📋 Providers already registered in bootstrap/providers.php');
+        }
+
+        $this->newLine();
     }
 
     /**
@@ -124,7 +177,6 @@ class InstallCommand extends Command
 
         $contents = file_get_contents($envPath);
 
-        // Replace APP_NAME (handles APP_NAME=Laravel, APP_NAME="Laravel", APP_NAME='Laravel')
         $updated = preg_replace(
             '/^APP_NAME=(.*)$/m',
             'APP_NAME="Apex Starter Kit"',

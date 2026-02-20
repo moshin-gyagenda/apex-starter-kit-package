@@ -122,12 +122,7 @@ class ApexStarterKitServiceProvider extends ServiceProvider
             __DIR__.'/../stubs/routes/web.php' => base_path('routes/web.php'),
         ], 'apex-routes');
 
-        // Publish Bootstrap Providers
-        $this->publishes([
-            __DIR__.'/../stubs/bootstrap/providers.php' => base_path('bootstrap/providers.php'),
-        ], 'apex-bootstrap');
-
-        // Publish all stubs at once
+        // Publish all stubs at once (bootstrap/providers.php is handled programmatically by InstallCommand)
         $this->publishes([
             // Fortify Actions
             __DIR__.'/../stubs/app/Actions/Fortify/CreateNewUser.php' => app_path('Actions/Fortify/CreateNewUser.php'),
@@ -152,8 +147,6 @@ class ApexStarterKitServiceProvider extends ServiceProvider
             __DIR__.'/../stubs/app/Models/SecurityLog.php' => app_path('Models/SecurityLog.php'),
             // Routes
             __DIR__.'/../stubs/routes/web.php' => base_path('routes/web.php'),
-            // Bootstrap
-            __DIR__.'/../stubs/bootstrap/providers.php' => base_path('bootstrap/providers.php'),
             // Seeders
             __DIR__.'/../stubs/database/seeders/DatabaseSeeder.php' => database_path('seeders/DatabaseSeeder.php'),
             __DIR__.'/../stubs/database/seeders/UserSeeder.php' => database_path('seeders/UserSeeder.php'),

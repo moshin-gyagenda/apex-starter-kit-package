@@ -71,15 +71,14 @@ composer require apexglobal/apex-starter-kit
 php artisan apex:install
 ```
 
-One command publishes everything: config, views, assets, controllers, models, routes, seeders, and service providers.
+One command does everything:
+- Publishes config, views, assets, controllers, models, routes, and seeders
+- Registers `FortifyServiceProvider` and `JetstreamServiceProvider` in `bootstrap/providers.php` automatically
+- Publishes Spatie Permission migrations
+- Replaces the default welcome page with the Apex landing page
+- Sets `APP_NAME` in your `.env`
 
-### 3. Publish Spatie Permission migrations
-
-```bash
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-```
-
-### 4. Run migrations
+### 3. Run migrations
 
 ```bash
 php artisan migrate
