@@ -147,13 +147,21 @@ Everything is published into your app — views under `resources/views/`, contro
 
 ## Installer options
 
+By default `apex:install` overwrites all existing files so nothing is skipped. Use `--safe` to preserve files you have already customised.
+
+| Option | Description |
+|--------|-------------|
+| *(no flags)* | Install and overwrite everything — recommended for fresh installs |
+| `--safe` | Skip files that already exist (preserves your customisations) |
+| `--config-only` | Publish only config files |
+| `--views-only` | Publish only views |
+| `--assets-only` | Publish only assets |
+| `--stubs-only` | Publish only code stubs (actions, providers, controllers, etc.) |
+
 ```bash
-php artisan apex:install              # Install everything
-php artisan apex:install --force      # Overwrite existing files
-php artisan apex:install --config-only
-php artisan apex:install --views-only
-php artisan apex:install --assets-only
-php artisan apex:install --stubs-only
+php artisan apex:install              # Fresh install — overwrites everything
+php artisan apex:install --safe       # Re-install — skip existing files
+php artisan apex:install --views-only # Only re-publish views
 ```
 
 ---

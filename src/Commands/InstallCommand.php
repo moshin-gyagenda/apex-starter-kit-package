@@ -11,8 +11,8 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'apex:install 
-                            {--force : Overwrite existing files}
+    protected $signature = 'apex:install
+                            {--safe : Skip files that already exist (preserve customisations)}
                             {--config-only : Only publish config files}
                             {--views-only : Only publish view files}
                             {--assets-only : Only publish asset files}
@@ -33,11 +33,17 @@ class InstallCommand extends Command
         $this->info('🚀 Installing Apex Starter Kit...');
         $this->newLine();
 
-        $force = $this->option('force');
+        // Force is the default — use --safe to preserve existing files
+        $force = !$this->option('safe');
         $configOnly = $this->option('config-only');
         $viewsOnly = $this->option('views-only');
         $assetsOnly = $this->option('assets-only');
         $stubsOnly = $this->option('stubs-only');
+
+        if (!$force) {
+            $this->warn('Running in safe mode — existing files will be skipped.');
+            $this->newLine();
+        }
 
         // Publish config
         if (!$viewsOnly && !$assetsOnly && !$stubsOnly) {
@@ -56,7 +62,6 @@ class InstallCommand extends Command
                 '--tag' => 'apex-views',
                 '--force' => $force,
             ]);
-            // Replace default welcome page
             $this->call('vendor:publish', [
                 '--tag' => 'apex-welcome',
                 '--force' => $force,
@@ -91,7 +96,7 @@ class InstallCommand extends Command
 
         $this->info('✅ Apex Starter Kit installed successfully!');
         $this->newLine();
-        
+
         $this->info('📝 Next steps:');
         $this->line('   1. Publish Spatie Permission migrations (if not done):');
         $this->line('      php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"');
